@@ -36,6 +36,11 @@ Stat = function(X,Y,Z){
   return(sum(T)/(n^3))
 }
 
+# Resampling based test
+
+# @param X, Y, Z sampled data
+# @param R number of iterations of the resampling algorithm
+
 Test.CTS = function(X,Y,Z, R){
   if(class(X)[1] == "numeric"){
     n = length(X)
