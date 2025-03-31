@@ -538,7 +538,7 @@ data_reliability_diagram <- function(predicted_probs, true_labels, n_bins=10) {
 #' @importFrom stats dist median pnorm rnorm
 #' @importFrom utils combn data
 
-asy_test <- function(data, k, hyper = NULL,
+asy_test <- function(data, k,
                      kernel_choice = "Gaussian"){
 
   # extract data
