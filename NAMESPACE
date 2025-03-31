@@ -1,3 +1,4 @@
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, evalCpp)
+importFrom(RANN, nn2)
 useDynLib(CTS, .registration = TRUE)
