@@ -8,7 +8,7 @@ alpha = 0.05
 
 #Example 1
 n = 100
-del = seq(1,10, length.out = 5)
+del = seq(0,0.5, length.out = 5)
 dx = 10
 dy = 10
 dz = 10
@@ -33,7 +33,7 @@ dataset_ex1 = foreach(delta = del, .packages = c("mnormt"))%dopar%{
 
 #Example 2
 n = 100
-del = seq(1,10, length.out = 5)
+del = seq(1,1.5, length.out = 5)
 dx = 10
 dy = 10
 dz = 10
@@ -90,7 +90,7 @@ dataset_ex3 = foreach(delta = del, .packages = c("mnormt", "transport"))%dopar%{
 
 #Example 4
 n = 100
-del = seq(1,10, length.out = 5)
+del = seq(1,2, length.out = 5)
 
 dataset_ex4 = foreach(delta = del, .packages = c("mnormt", "transport"))%dopar%{
   Z = rnorm(n)

@@ -8,7 +8,7 @@
 # @param R number of iterations of the resampling algorithm
 
 Test.CTS = function(X, Y=NULL, Z=NULL, distance = FALSE, R = 200){
-  if(distance  = TRUE){
+  if(distance == TRUE){
     S = Stat_cpp(X)
 
     v = rbinom(R*n,1,0.5)
@@ -51,7 +51,7 @@ Test.CTS = function(X, Y=NULL, Z=NULL, distance = FALSE, R = 200){
 }
 
 BD.ctest = function(X, Y = NULL,Z = NULL, distance = FALSE, R = 200){
-  if(distance = TRUE){
+  if(distance == TRUE){
     S = bd(X, distance = TRUE, size = c(n,n))
 
     v = rbinom(R*n,1,0.5)

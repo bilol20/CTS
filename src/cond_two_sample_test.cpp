@@ -62,12 +62,12 @@ double Stat_cpp(NumericMatrix D) {
   // NumericMatrix V = combineRows_cpp(X1, Y1);
   // NumericMatrix D = distMatrix_cpp(V);
   double s = median(D);
-  
+
   NumericVector T(n);
   // Loop over i = 0 to n-1 (corresponding to R's 1:n)
   for (int i = 0; i < n; ++i) {
     // Allocate matrices with n+1 columns (first column from a single vector,
-    // then n columns from a block)  
+    // then n columns from a block)
     NumericMatrix M1(m, n + 1),
     M2(m, n + 1),
     M3(m, n + 1);
@@ -96,12 +96,12 @@ double Stat_cpp(NumericMatrix D) {
       NumericVector row1 = M1(j, _);
       NumericVector row2 = M2(j, _);
       NumericVector row3 = M3(j, _);
-      
+
       // Apply comp to each row:
       NumericVector comp1 = comp_cpp(row1);
       NumericVector comp2 = comp_cpp(row2);
       NumericVector comp3 = comp_cpp(row3);
-      
+
       // Now, apply F (here, the normal CDF using R::pnorm) elementwise and sum.
       // Here we loop over the elements of the comp output.
       for (int l = 0; l < comp1.size(); l++) {
@@ -126,7 +126,7 @@ double Test_cpp(NumericMatrix X, NumericMatrix Y, NumericMatrix Z, int R) {
   NumericMatrix D = distMatrix_cpp(V);
   double S = Stat_cpp(D);
   NumericVector S1(R);
-  
+
   for (int r = 0; r < R; ++r) {
     IntegerVector v = as<IntegerVector>(Rcpp::rbinom(n, 1, 0.5));
     std::vector<int> index;
@@ -151,6 +151,6 @@ double Test_cpp(NumericMatrix X, NumericMatrix Y, NumericMatrix Z, int R) {
     }
     S1[r] = Stat_cpp(D1);
   }
-  
+
   return (float) (1 + sum(S1 > S) + sum(S1 == S)) / (1 + R);
 }
