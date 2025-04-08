@@ -1,10 +1,6 @@
 library(doParallel)
 cl = makeCluster(detectCores())
 registerDoParallel(cl)
-ITR = 1000
-R = 200
-alpha = 0.05
-
 
 #Example 1
 n = 100
