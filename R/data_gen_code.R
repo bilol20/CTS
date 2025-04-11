@@ -192,10 +192,10 @@ dataset_ex7 = foreach(n = sample_size, .packages = c("mnormt", "igraph", "Matrix
   U = list()
   for(i in 1:(2*n)){
     if(i<=n){
-      U[[i]] = list(G = erdos.renyi.game(n = 200, p = p1, directed = FALSE, loops = FALSE),
+      U[[i]] = list(G = erdos.renyi.game(200, p = p1, directed = FALSE, loops = FALSE),
                     Z = Z[i])
     }else{
-      U[[i]] = list(G = erdos.renyi.game(n = 200, p = p2, directed = FALSE, loops = FALSE),
+      U[[i]] = list(G = erdos.renyi.game(200, p = p2, directed = FALSE, loops = FALSE),
                     Z = Z[i-n])
     }
   }
@@ -224,10 +224,10 @@ dataset_ex8 = foreach(delta = del, .packages = c("mnormt", "igraph", "Matrix"))%
   U = list()
   for(i in 1:(2*n)){
     if(i<=n){
-      U[[i]] = list(G = barabasi.game(n = 200, power = abs(Z[i]), directed = FALSE, zero.appeal = 0),
+      U[[i]] = list(G = barabasi.game(200, power = abs(Z[i]), directed = FALSE, zero.appeal = 0),
                     Z = Z[i])
     }else{
-      U[[i]] = list(G = barabasi.game(n = 200, power = abs(Z[i-n]) + delta, directed = FALSE, zero.appeal = 0),
+      U[[i]] = list(G = barabasi.game(200, power = abs(Z[i-n]) + delta, directed = FALSE, zero.appeal = 0),
                     Z = Z[i-n])
     }
   }
