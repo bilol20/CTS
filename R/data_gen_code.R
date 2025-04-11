@@ -1,4 +1,4 @@
-R = 200
+R = 1000
 
 library(doParallel)
 cl = makeCluster(detectCores())
