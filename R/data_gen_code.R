@@ -155,8 +155,40 @@ del = seq(0,1, length.out = 5)
 
 dataset_ex6 = foreach(delta = del, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
   Z = rnorm(n)
-  p1 = pnorm(z)
-  p2 = pnorm(z-delta)
+  p1 = pnorm(Z)
+  p2 = pnorm(Z-delta)
+  U = list()
+  for(i in 1:(2*n)){
+    if(i<=n){
+      U[[i]] = list(G = erdos.renyi.game(n = 200, p = p1, directed = FALSE, loops = FALSE),
+                    Z = Z[i])
+    }else{
+      U[[i]] = list(G = erdos.renyi.game(n = 200, p = p2, directed = FALSE, loops = FALSE),
+                    Z = Z[i-n])
+    }
+  }
+
+  k = 2*n
+  D = matrix(0,k,k)
+  for(i in 1:k){
+    for(j in 1:k){
+      L1 = as.matrix(laplacian_matrix(U[[i]]$G))
+      L2 = as.matrix(laplacian_matrix(U[[j]]$G))
+      D[i,j] = norm(L1 - L2, type = "F") + abs(U[[i]]$Z-U[[j]]$Z)
+    }
+  }
+
+
+  return(list(dist_mat = D))
+}
+
+#Example 7
+sample_size = c(5,10,15,20,25)
+
+dataset_ex7 = foreach(n = sample_size, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
+  Z = rnorm(n)
+  p1 = pnorm(Z)
+  p2 = exp(Z)/(1+exp(Z))
   U = list()
   for(i in 1:(2*n)){
     if(i<=n){
@@ -183,12 +215,11 @@ dataset_ex6 = foreach(delta = del, .packages = c("mnormt", "igraph", "Matrix"))%
 }
 
 
-
-#Example 7
+#Example 8
 n = 100
 del = seq(0,1, length.out = 5)
 
-dataset_ex7 = foreach(delta = del, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
+dataset_ex8 = foreach(delta = del, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
   Z = rnorm(n)
   U = list()
   for(i in 1:(2*n)){
