@@ -6,7 +6,7 @@ registerDoParallel(cl)
 
 #Example 1
 n = 100
-del = seq(0,0.5, length.out = 5)
+del = seq(0,0.25, length.out = 5)
 dx = 10
 dy = 10
 dz = 10
@@ -36,7 +36,7 @@ dataset_ex1 = lapply(del, function(delta){
 
 #Example 2
 n = 100
-del = seq(1,1.5, length.out = 5)
+del = seq(1,1.25, length.out = 5)
 dx = 10
 dy = 10
 dz = 10
@@ -68,7 +68,7 @@ dataset_ex2 = lapply(del, function(delta){
 
 #Example 3
 n = 100
-del = seq(1,10, length.out = 5)
+del = seq(0,0.25, length.out = 5)
 
 dataset_ex3 = lapply(del, function(delta){
   dat = foreach(itr = 1:R, .packages = c("mnormt", "transport"), .export = c("n"))%dopar%{
@@ -103,7 +103,7 @@ dataset_ex3 = lapply(del, function(delta){
 
 #Example 4
 n = 100
-del = seq(1,2, length.out = 5)
+del = seq(1,1.25, length.out = 5)
 
 dataset_ex4 = lapply(del, function(delta){
   dat = foreach(itr = 1:R, .packages = c("mnormt", "transport"), .export = c("n"))%dopar%{
@@ -138,7 +138,7 @@ dataset_ex4 = lapply(del, function(delta){
 
 #Example 5
 n = 100
-del = seq(0,1, length.out = 5)
+del = seq(0,0.25, length.out = 5)
 
 dataset_ex5 = lapply(del, function(delta){
   dat = foreach(itr = 1:R, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
@@ -177,7 +177,7 @@ dataset_ex5 = lapply(del, function(delta){
 
 #Example 6
 n = 100
-del = seq(0,1, length.out = 5)
+del = seq(0,0.25, length.out = 5)
 
 dataset_ex6 = lapply(del, function(delta){
   dat = foreach(itr = 1:R, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
@@ -253,7 +253,7 @@ dataset_ex7 = lapply(sample_size, function(n){
 
 #Example 8
 n = 100
-del = seq(0,1, length.out = 5)
+del = seq(0,0.25, length.out = 5)
 
 dataset_ex8 = lapply(del, function(delta){
   dat = foreach(itr = 1:R, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
@@ -276,6 +276,143 @@ dataset_ex8 = lapply(del, function(delta){
         L1 = as.matrix(laplacian_matrix(U[[i]]$G))
         L2 = as.matrix(laplacian_matrix(U[[j]]$G))
         D[i,j] = norm(L1 - L2, type = "F") + abs(U[[i]]$Z-U[[j]]$Z)
+      }
+    }
+
+
+    return(list(dist_mat = D))
+  }
+
+  return(dat)
+})
+
+
+
+#Example 9
+n = 100
+tt = seq(0, 1, length = 100)
+del = seq(0,1, length.out = 5)
+
+dataset_ex9 = lapply(del, function(delta){
+  dat = foreach(itr = 1:R, .packages = c("mnormt", "fda.usc"))%dopar%{
+    z = rproc2fdata(n = n, t = tt, sigma = "OU")
+
+    beta_fun = sin(2 * pi * tt)
+    x = inprod.fdata(z, fdata(beta_fun, tt, rangeval = c(0, 1))) + rnorm(n, sd = 0.2)
+
+    beta_fun = (1+delta)*sin(2 * pi * tt)
+    y = inprod.fdata(z, fdata(beta_fun, tt, rangeval = c(0, 1))) + rnorm(n, sd = 0.2)
+
+    M = metric.lp(z, p = 2)
+    D1 = as.matrix(dist(c(x,y)))
+
+    D = matrix(0,2*n,2*n)
+    D[1:n,1:n] = D1[1:n, 1:n]+M
+    D[n+1:n,1:n] = D1[n+1:n, 1:n]+M
+    D[1:n,n+1:n] = D1[1:n,n+1:n]+M
+    D[n+1:n,n+1:n] = D1[n+1:n,n+1:n]+M
+
+    return(list(dist_mat = D))
+  }
+
+  return(dat)
+})
+
+
+#Example 10
+n = 100
+tt = seq(0, 1, length = 100)
+del = seq(0,1, length.out = 5)
+
+dataset_ex10 = lapply(del, function(delta){
+  dat = foreach(itr = 1:R, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
+    z = rproc2fdata(n = n, t = tt, sigma = "wiener")
+
+    beta_fun = sin(2 * pi * tt)
+    x = inprod.fdata(z, fdata(beta_fun, tt, rangeval = c(0, 1))) + rnorm(n, sd = 0.2)
+
+    beta_fun = (1+delta)*sin(2 * pi * tt)
+    y = inprod.fdata(z, fdata(beta_fun, tt, rangeval = c(0, 1))) + rnorm(n, sd = 0.2)
+
+    M = metric.lp(z, p = 2)^2
+    D1 = as.matrix(dist(c(x,y)))^2
+
+    D = matrix(0,2*n,2*n)
+    D[1:n,1:n] = sqrt(D1[1:n, 1:n]+M)
+    D[n+1:n,1:n] = sqrt(D1[n+1:n, 1:n]+M)
+    D[1:n,n+1:n] = sqrt(D1[1:n,n+1:n]+M)
+    D[n+1:n,n+1:n] = sqrt(D1[n+1:n,n+1:n]+M)
+
+
+    return(list(dist_mat = D))
+  }
+
+  return(dat)
+})
+
+
+#Example 11
+n = 100
+del = seq(0.1,0.9, length.out = 5)
+
+dataset_ex10 = lapply(del, function(delta){
+  dat = foreach(itr = 1:R, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
+    U = list()
+    for(i in 1:(2*n)){
+      if(i<=n){
+        U[[i]] = erdos.renyi.game(200, p = 0.5, directed = FALSE, loops = FALSE)
+      }else{
+        U[[i]] = erdos.renyi.game(200, p = delta, directed = FALSE, loops = FALSE)
+      }
+    }
+
+    T = unlist(lapply(U, function(G) transitivity(G)))
+    #X = T[1:n]
+    #Y = T[n+1:n]
+
+    k = 2*n
+    D = matrix(0,k,k)
+    for(i in 1:k){
+      for(j in 1:k){
+        L1 = as.matrix(laplacian_matrix(U[[i]]))
+        L2 = as.matrix(laplacian_matrix(U[[j]]))
+        D[i,j] = norm(L1 - L2, type = "F") + abs(T[i]-T[j])
+      }
+    }
+
+
+    return(list(dist_mat = D))
+  }
+
+  return(dat)
+})
+
+#Example 12
+n = 100
+del = seq(0,1, length.out = 5)
+
+dataset_ex10 = lapply(del, function(delta){
+  dat = foreach(itr = 1:R, .packages = c("mnormt", "igraph", "Matrix"))%dopar%{
+    U = list()
+    for(i in 1:(2*n)){
+      if(i<=n){
+        U[[i]] = rexp(500, rate = rpois(1, lambda = 2)+1)
+      }else{
+        U[[i]] = rexp(500, rate = rpois(1, lambda = 2)+1 + delta)
+      }
+    }
+
+    T = lapply(U, function(G) quantile(G, probs = c(0.25,0.5,0.75)))
+    S = matrix(0, nrow = 2*n,  ncol = 3)
+    for(i in 1:(2*n))
+      S[i,] = T[[i]]
+
+
+    k = 2*n
+    D = matrix(0,k,k)
+    for(i in 1:k){
+      for(j in 1:k){
+        D[i,j] = wasserstein1d(U[[i]], U[[j]], p = 1) + sqrt(sum((S[i,]-S[j])^2))
       }
     }
 
